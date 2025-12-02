@@ -73,6 +73,7 @@ def create_package(
         else:
             # Render the file name
             file_name = render_template(env, template_path.name, context)
+            print(file_name)
             with open(template_path, encoding="utf-8") as f:
                 content = f.read()
             # Render the file content

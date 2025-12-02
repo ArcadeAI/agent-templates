@@ -1,15 +1,11 @@
 [project]
-name = "agent-templates"
+name = "python-openai-agents-sdk"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "jinja2>=3.1.6",
-    "rich>=14.2.0",
-]
-
-[tool.uv.workspace]
-members = [
-    "python_openai_agents_sdk",
+    "agents-arcade>=0.0.4",
+    "openai-agents>=0.6.1",
+    "python-dotenv>=1.2.1",
 ]
