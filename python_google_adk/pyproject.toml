@@ -8,4 +8,5 @@ dependencies = [
     "arcadepy>=1.10.0",
     "google-adk>=1.19.0",
     "google-adk-arcade>=0.0.2",
+    "litellm>=1.80.7",
 ]
