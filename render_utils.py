@@ -88,6 +88,7 @@ def create_package(
 def create_agent(output_directory: str, template_dir: Path, context: dict) -> None:
     """Create a new toolkit from a template with user input."""
     toolkit_directory = Path(output_directory)
+    toolkit_directory.mkdir(parents=True, exist_ok=True)
 
     env = Environment(
         loader=FileSystemLoader(str(template_dir)),
@@ -97,7 +98,10 @@ def create_agent(output_directory: str, template_dir: Path, context: dict) -> No
     ignore_pattern = create_ignore_pattern(False, False)
 
     try:
-        create_package(env, template_dir, toolkit_directory, context, ignore_pattern)
+        # Iterate over template_dir contents directly to avoid creating
+        # a nested subdirectory with the template folder's name
+        for item in template_dir.iterdir():
+            create_package(env, item, toolkit_directory, context, ignore_pattern)
         console.print(
             f"[green]Agent created successfully at '{toolkit_directory}'.[/green]"
         )

@@ -1,0 +1,11 @@
+{
+    "arcade_toolkit_list": [
+        "MicrosoftTeams",
+        "GoogleDocs",
+        "Linear",
+        "GitHub"
+    ],
+    "tools_with_human_confirmation": [],
+    "agent_instruction": "You are an expert agent and you are responsible for creating a weekly developer digest. Look for the user's GitHub repositories and issues and create a Google Doc with the summary of all open issues, use the Microsoft Teams integration to let the user know when the digest is ready. Always greet the user informing that your purpose is to create the weekly digest, and remind them of how you will achieve it.",
+    "agent_description": "An agent that creates a weekly developer digest"
+}
