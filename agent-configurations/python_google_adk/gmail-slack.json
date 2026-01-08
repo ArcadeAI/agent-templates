@@ -1,16 +1,10 @@
-from pathlib import Path
-from render_utils import create_agent
-
-template_dir = Path(__file__).parent / "python_google_adk"
-output_dir = Path(__file__).parent / "real_agents"
-
-configuration = {
+{
     "arcade_tool_list": [
         "Gmail_ListEmails",
         "Gmail_SendEmail"
     ],
     "arcade_toolkit_list": [
-        "Slack",
+        "Slack"
     ],
     "tools_with_human_confirmation": [
         "Gmail_SendEmail",
@@ -20,4 +14,3 @@ configuration = {
     "agent_description": "An agent with Gmail and Slack tools"
 }
 
-create_agent(output_dir, template_dir, configuration)
