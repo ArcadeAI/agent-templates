@@ -4,8 +4,7 @@
         "Gmail_SendEmail"
     ],
     "arcade_toolkit_list": [
-        "Slack",
-        "gmail"
+        "Slack"
     ],
     "tools_with_human_confirmation": [
         "Gmail_SendEmail",
