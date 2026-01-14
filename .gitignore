@@ -217,3 +217,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Agent sync automation
+.sync-state.json
+.sync-logs/

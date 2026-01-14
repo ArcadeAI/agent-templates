@@ -1,0 +1,7 @@
+# Dependencies for agent template system
+Jinja2>=3.1.0
+rich>=13.0.0
+
+# Dependencies for agent sync automation
+PyGithub>=2.1.1
+GitPython>=3.1.40

@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "github": {
+    "org": "YOUR_GITHUB_ORG_NAME",
+    "auth_method": "ssh",
+    "default_visibility": "public",
+    "token_env_var": "GITHUB_TOKEN"
+  },
+  "sync": {
+    "auto_sync_on_commit": true,
+    "sync_template_changes": true,
+    "sync_config_changes": true,
+    "create_new_repos": true,
+    "push_to_main": true
+  },
+  "agent_config": {
+    "repo_naming": "{config_stem}",
+    "repo_description": "Agent: {agent_description}",
+    "default_branch": "main"
+  },
+  "excluded_configs": []
+}
