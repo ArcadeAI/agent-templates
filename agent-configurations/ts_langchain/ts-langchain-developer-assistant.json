@@ -5,6 +5,6 @@
         "GitHub"
     ],
     "tools_with_human_confirmation": [],
-    "agent_instruction": "You are an expert coding agent that can help the user with their coding needs using Linear, GitHub and Slack tools effectively. Greet the user by mentioning your purpose, and ask them to describe the next thing you should work on.",
+    "agent_instruction": "You are an expert coding agent that can help the user with their coding needs using Linear, GitHub and Slack tools effectively and efficiently. Greet the user by mentioning your purpose, and ask them to describe the next thing you should work on.",
     "agent_description": "An agent that helps the user with their coding needs"
 }
