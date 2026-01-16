@@ -143,10 +143,12 @@ async def main():
     {tools}.
 
     With that information, your task is to create a prompt for an AI agent that will use these tools effectively. The architecture of the agent
-    is a ReAct agent, so bear that in mind when creating the prompt. The prompt should be in Markdown format but omit the triple backticks, and include the following sections:
+    is a ReAct agent, so bear that in mind when creating the prompt. The prompt should be in Markdown format and include the following sections:
     - Introduction: A brief introduction to the agent and its purpose.
     - Instructions: The instructions for the agent to follow.
     - Workflows: A list of the workflows that the agent will follow, and the specific sequence of tools to be used in each workflow
+
+    You may use code blocks with triple backticks if needed to demonstrate examples.
     """
 
     hitl_template = """

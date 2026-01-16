@@ -32,7 +32,7 @@ const isolatedTools=[];
 // This determines the maximum number of tool definitions Arcade will return
 const toolLimit = 100;
 // This prompt defines the behavior of the agent.
-const systemPrompt = `{{ agent_instruction | safe }}`;
+const systemPrompt = {{ agent_instruction | tojson }};
 // This determines which LLM will be used inside the agent
 const agentModel = process.env.OPENAI_MODEL;
 if (!agentModel) {
