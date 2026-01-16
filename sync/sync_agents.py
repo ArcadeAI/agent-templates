@@ -13,6 +13,7 @@ from .config_manager import ConfigManager
 from .state_tracker import StateTracker
 from .github_client import GitHubClient
 from .agent_generator import AgentGenerator
+from .rate_limiter import RateLimiter
 
 
 # Setup logging
@@ -39,6 +40,7 @@ class AgentSync:
         self.change_detector = ChangeDetector(repo_root)
         self.agent_generator = AgentGenerator(repo_root)
         self.github_client = None
+        self.rate_limiter = RateLimiter(self.state_tracker, self.config_manager)
 
     def initialize_github_client(self):
         """Initialize GitHub client with token from config."""
@@ -74,6 +76,15 @@ class AgentSync:
             logger.info(f"Skipping excluded config: {config_path}")
             return True
 
+        # Check rate limit for creating new repos
+        can_create, reason = self.rate_limiter.can_create_repo()
+        if not can_create:
+            logger.warning(f"⏳ Rate limit: {reason}")
+            logger.warning(f"Deferring new config: {config_path}")
+            agent_key = self.state_tracker.get_agent_key(config_path)
+            self.state_tracker.mark_agent_pending(agent_key, f"Rate limited: {reason}")
+            return False
+
         try:
             logger.info(f"Processing new config: {config_path}")
 
@@ -82,6 +93,7 @@ class AgentSync:
             repo_name = self.get_repo_name_from_config(config_path)
             auth_method = self.config_manager.get_auth_method()
 
+            repo_created = False
             # Check if repo already exists
             if self.github_client.repo_exists(org, repo_name):
                 logger.info(f"Repository {org}/{repo_name} already exists")
@@ -96,6 +108,7 @@ class AgentSync:
                     description=f"Agent generated from {template_name} template",
                     visibility=visibility
                 )
+                repo_created = True
 
             # Generate agent and push
             agent_dir, commit_sha = self.agent_generator.sync_agent(
@@ -117,6 +130,11 @@ class AgentSync:
                 status='synced',
                 last_commit_sha=commit_sha
             )
+
+            # Record rate limit usage
+            if repo_created:
+                self.rate_limiter.record_repo_creation()
+            self.rate_limiter.record_update()
 
             logger.info(f"✓ Successfully synced new agent: {repo_name}")
             return True
@@ -140,6 +158,15 @@ class AgentSync:
         if self.config_manager.is_excluded_config(config_path):
             logger.info(f"Skipping excluded config: {config_path}")
             return True
+
+        # Check rate limit for updates
+        can_push, reason = self.rate_limiter.can_push_update()
+        if not can_push:
+            logger.warning(f"⏳ Rate limit: {reason}")
+            logger.warning(f"Deferring update: {config_path}")
+            agent_key = self.state_tracker.get_agent_key(config_path)
+            self.state_tracker.mark_agent_pending(agent_key, f"Rate limited: {reason}")
+            return False
 
         try:
             logger.info(f"Processing modified config: {config_path}")
@@ -173,6 +200,9 @@ class AgentSync:
                 status='synced',
                 last_commit_sha=commit_sha
             )
+
+            # Record rate limit usage
+            self.rate_limiter.record_update()
 
             logger.info(f"✓ Successfully synced modified agent: {agent_info['repo_name']}")
             return True
@@ -353,6 +383,28 @@ class AgentSync:
         logger.info(f"Retry complete: {success}/{len(all_to_retry)} succeeded")
         return 0 if success == len(all_to_retry) else 1
 
+    def show_rate_limits(self):
+        """Show current rate limit status."""
+        status = self.rate_limiter.get_rate_limit_status()
+
+        logger.info("\n=== Rate Limit Status ===")
+
+        # New repos
+        new_repos = status['new_repos']
+        logger.info(f"\nNew Repository Creation ({new_repos['window']}):")
+        logger.info(f"  Current: {new_repos['current']}")
+        logger.info(f"  Limit: {new_repos['limit']}")
+        if new_repos['limit'] != 'unlimited':
+            logger.info(f"  Remaining: {new_repos['remaining']}")
+
+        # Updates
+        updates = status['updates']
+        logger.info(f"\nAgent Updates ({updates['window']}):")
+        logger.info(f"  Current: {updates['current']}")
+        logger.info(f"  Limit: {updates['limit']}")
+        if updates['limit'] != 'unlimited':
+            logger.info(f"  Remaining: {updates['remaining']}")
+
 
 def main():
     """Main entry point."""
@@ -379,6 +431,11 @@ def main():
         action='store_true',
         help='Health check'
     )
+    parser.add_argument(
+        '--rate-status',
+        action='store_true',
+        help='Show rate limit status'
+    )
 
     args = parser.parse_args()
 
@@ -395,6 +452,9 @@ def main():
             return 0
         elif args.retry:
             return sync.retry_failed()
+        elif args.rate_status:
+            sync.show_rate_limits()
+            return 0
         elif args.check:
             logger.info("Sync system health check: OK")
             return 0

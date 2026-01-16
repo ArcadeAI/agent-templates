@@ -180,3 +180,23 @@ class ConfigManager:
                 return True
 
         return False
+
+    def get_new_repos_per_day(self) -> Optional[int]:
+        """Get rate limit for creating new repos per day.
+
+        Returns:
+            Number of repos allowed per day, or None for unlimited
+        """
+        config = self.load_config()
+        limit = config.get('rate_limits', {}).get('new_repos_per_day')
+        return limit if limit and limit > 0 else None
+
+    def get_updates_per_hour(self) -> Optional[int]:
+        """Get rate limit for pushing updates per hour.
+
+        Returns:
+            Number of updates allowed per hour, or None for unlimited
+        """
+        config = self.load_config()
+        limit = config.get('rate_limits', {}).get('updates_per_hour')
+        return limit if limit and limit > 0 else None

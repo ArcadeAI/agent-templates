@@ -3,8 +3,6 @@ __pycache__/
 *.py[codz]
 *$py.class
 
-# ignore all real agents 
-real_agents
 
 # C extensions
 *.so

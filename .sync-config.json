@@ -13,6 +13,10 @@
     "create_new_repos": true,
     "push_to_main": true
   },
+  "rate_limits": {
+    "new_repos_per_day": 100,
+    "updates_per_hour": 50
+  },
   "agent_config": {
     "repo_naming": "{config_stem}",
     "repo_description": "Agent: {agent_description}",
