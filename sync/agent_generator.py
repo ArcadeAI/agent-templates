@@ -217,7 +217,9 @@ class AgentGenerator:
             return commit_sha
 
         except subprocess.CalledProcessError as e:
-            if 'nothing to commit' in e.stderr:
+            # Check for "nothing to commit" in both stderr and stdout
+            error_text = (e.stderr or '') + (e.stdout or '')
+            if 'nothing to commit' in error_text.lower():
                 logger.info("No changes to commit")
                 # Get current HEAD SHA
                 result = subprocess.run(
@@ -229,7 +231,9 @@ class AgentGenerator:
                 )
                 return result.stdout.strip()
             else:
-                logger.error(f"Failed to commit: {e.stderr}")
+                logger.error(f"Failed to commit:")
+                logger.error(f"  stderr: {e.stderr}")
+                logger.error(f"  stdout: {e.stdout}")
                 raise RuntimeError(f"Git commit failed: {e}")
 
     def push_to_remote(
