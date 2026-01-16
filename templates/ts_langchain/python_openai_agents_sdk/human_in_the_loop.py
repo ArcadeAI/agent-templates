@@ -1,3 +1,4 @@
+from arcadepy import AsyncArcade
 from agents import AgentsException, RunContextWrapper
 from pprint import pp
 import json
@@ -39,3 +40,8 @@ async def confirm_tool_usage(context: RunContextWrapper,
     raise UserDeniedToolCall(tool_name)
 
 
+async def auth_tool(client: AsyncArcade, tool_name: str, user_id: str):
+    result = await client.tools.authorize(tool_name=tool_name, user_id=user_id)
+    if result.status != "completed":
+        print(f"Click this link to authorize {tool_name}:\n{result.url}")
+    await client.auth.wait_for_completion(result)

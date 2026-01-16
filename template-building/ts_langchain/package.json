@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@arcadeai/arcadejs": "^1.15.0",
+    "@langchain/core": "^1.1.11",
+    "@langchain/langgraph": "^1.0.7",
+    "@langchain/openai": "^1.2.1",
+    "langchain": "^1.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10"
+  }
+}

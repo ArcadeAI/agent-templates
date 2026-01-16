@@ -46,7 +46,7 @@ ALL_OPTIMIZED_TOOLKITS = [
     "Reddit",
     "OutlookMail",
     "Slack",
-    #"Spotify", # Spotify is annoying for API usage, so let's not use it for now, also audio is complex and we don't have a template for it yet
+    # "Spotify", # Spotify is annoying for API usage, so let's not use it for now, also audio is complex and we don't have a template for it yet
     "Stripe",
     "Walmart",
     "X",
@@ -161,7 +161,6 @@ async def main():
     - The tool may be used to delete or modify data, which may be unwanted, or harmful.
     """
     for toolkit in ALL_OPTIMIZED_TOOLKITS:
-    # for toolkit in ["Slack"]:
         print(f"Processing {toolkit}...")
         print("Getting tools...")
         tools = await get_all_tools_from_mcp_server(toolkit, limit=100, client=client)
