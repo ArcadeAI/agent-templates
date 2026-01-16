@@ -1,11 +1,12 @@
 """Agent generation and git operations."""
 
 import json
+import logging
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Optional, Tuple
-import logging
-import sys
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +65,16 @@ class AgentGenerator:
         logger.info(f"Generating agent: {config_path}")
         logger.info(f"  Template: {template_name}")
         logger.info(f"  Output: {output_dir}")
+
+        # If output directory exists, nuke everything except .git
+        if output_dir.exists():
+            logger.info(f"Cleaning existing agent directory (preserving .git)")
+            for item in output_dir.iterdir():
+                if item.name != '.git':
+                    if item.is_dir():
+                        shutil.rmtree(item)
+                    else:
+                        item.unlink()
 
         # Import and use the create_agent function from render_utils
         try:
