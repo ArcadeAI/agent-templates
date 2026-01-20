@@ -4,10 +4,9 @@ import json
 from dotenv import load_dotenv
 from rich import print
 from utils.arcade_tools import get_all_tools_from_mcp_server
-from pydantic import BaseModel, Field, create_model
+from pydantic import Field, create_model
 from typing import Any
 from openai import OpenAI
-from pathlib import Path
 
 load_dotenv()
 
@@ -55,7 +54,12 @@ ALL_OPTIMIZED_TOOLKITS = [
     "Zoom",
 ]
 
-def create_ts_langchain_config(toolkit: str, system_prompt: str, agent_description: str, hitl_assignment: dict):
+
+# TODO(Mateo): This needs to handle multiple templates in the future
+def create_ts_langchain_config(toolkit: str,
+                               system_prompt: str,
+                               agent_description: str,
+                               hitl_assignment: dict):
     return {
         "arcade_toolkit_list": [
             toolkit
@@ -64,6 +68,39 @@ def create_ts_langchain_config(toolkit: str, system_prompt: str, agent_descripti
         "agent_instruction": system_prompt,
         "agent_description": agent_description
     }
+
+
+def create_py_openai_config(toolkit: str,
+                            system_prompt: str,
+                            agent_description: str,
+                            agent_name: str,
+                            hitl_assignment: dict):
+    return {
+        "arcade_toolkit_list": [
+            toolkit
+        ],
+        "tools_with_human_confirmation": hitl_assignment,
+        "agent_instruction": system_prompt,
+        "agent_description": agent_description,
+        "agent_name": agent_name
+    }
+
+
+def create_py_google_adk_config(toolkit: str,
+                                system_prompt: str,
+                                agent_description: str,
+                                agent_name: str,
+                                hitl_assignment: dict):
+    return {
+        "arcade_toolkit_list": [
+            toolkit
+        ],
+        "tools_with_human_confirmation": hitl_assignment,
+        "agent_instruction": system_prompt,
+        "agent_description": agent_description,
+        "agent_name": agent_name
+    }
+
 
 def create_scoring_schema(tools: list):
     """
@@ -170,19 +207,41 @@ async def main():
         prompt = prompt_template.format(tools=formatted_tools)
         hitl = hitl_template.format(tools=formatted_tools)
         print("Invoking OpenAI model for prompt...")
-        prompt_response = invoke_openai_model(model="gpt-4o-mini", prompt=prompt)
+        prompt_response = invoke_openai_model(model="gpt-5-mini", prompt=prompt)
         print("Invoking OpenAI model for hitl...")
-        hitl_response = invoke_openai_model(model="gpt-4o-mini", prompt=hitl, schema=create_scoring_schema(tools))
+        hitl_response = invoke_openai_model(model="gpt-5-mini", prompt=hitl, schema=create_scoring_schema(tools))
         # Get a dict of the response and filter for True values
         hitl_tools = [key for key, value in hitl_response.model_dump().items() if value is True]
         print(f"Hitl tools for {toolkit}: {hitl_tools}")
+
+        # Typescript LangChain
         config = create_ts_langchain_config(toolkit, prompt_response, f"An agent that uses {toolkit} tools provided to perform any task", hitl_tools)
         # Write the config to a json file
         print(f"Writing config to agent-configurations/ts_langchain/ts-langchain-{toolkit}.json")
         with open(f"agent-configurations/ts_langchain/ts-langchain-{toolkit}.json", "w") as f:
             json.dump(config, f)
 
+        # Python OpenAI Agents SDK
+        config = create_py_openai_config(toolkit,
+                                         prompt_response,
+                                         f"An agent that uses {toolkit} tools provided to perform any task",
+                                         f"{toolkit}_Agent",
+                                         hitl_tools)
+        # Write the config to a json file
+        print(f"Writing config to agent-configurations/py_openai_agents_sdk/py-openai_agents_sdk-{toolkit}.json")
+        with open(f"agent-configurations/py_openai_agents_sdk/py-openai_agents_sdk-{toolkit}.json", "w") as f:
+            json.dump(config, f)
 
+        # Python Google ADK
+        config = create_py_google_adk_config(toolkit,
+                                             prompt_response,
+                                             f"An agent that uses {toolkit} tools provided to perform any task",
+                                             f"{toolkit}_Agent",
+                                             hitl_tools)
+        # Write the config to a json file
+        print(f"Writing config to agent-configurations/py_google_adk/py-google_adk-{toolkit}.json")
+        with open(f"agent-configurations/py_google_adk/py-google_adk-{toolkit}.json", "w") as f:
+            json.dump(config, f)
 
 if __name__ == "__main__":
     asyncio.run(main())
