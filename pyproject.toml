@@ -8,8 +8,3 @@ dependencies = [
     "jinja2>=3.1.6",
     "rich>=14.2.0",
 ]
-
-[tool.uv.workspace]
-members = [
-    "python_openai_agents_sdk",
-]

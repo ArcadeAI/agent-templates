@@ -1,10 +1,10 @@
 from arcadepy import AsyncArcade
 from google.adk.tools import ToolContext
-from google_adk_arcade.tools import ArcadeTool
 from pprint import pp
 from typing import Any
+from globals import ENFORCE_HUMAN_CONFIRMATION
+from tools import ArcadeTool
 
-ENFORCE_HUMAN_CONFIRMATION = {{ tools_with_human_confirmation | safe }}
 
 async def confirm_tool_usage(tool: ArcadeTool,
                              args: Any,

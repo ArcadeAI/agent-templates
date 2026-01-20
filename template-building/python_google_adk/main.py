@@ -4,42 +4,37 @@ from google.adk import Agent, Runner
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.sessions import InMemorySessionService, Session
-from google_adk_arcade.tools import get_arcade_tools
+from tools import get_arcade_tools
 from google.genai import types
 from human_in_the_loop import auth_tool, confirm_tool_usage
+import globals
 
-import os
-
-load_dotenv(override=True)
+load_dotenv()
 
 
 async def main():
-    app_name = "my_agent"
-    user_id = os.getenv("ARCADE_USER_ID")
+    app_name = globals.AGENT_NAME
+    user_id = globals.ARCADE_USER_ID
 
     session_service = InMemorySessionService()
     artifact_service = InMemoryArtifactService()
     client = AsyncArcade()
 
-    agent_tools = await get_arcade_tools(
-        client
-        {%- if arcade_tool_list -%}
-            , tools=[{% for tool in arcade_tool_list %}"{{ tool }}"{% if not loop.last %}, {% endif %}{% endfor %}]
-        {%- endif %}
-        {%- if arcade_toolkit_list -%}
-        , toolkits=[{% for toolkit in arcade_toolkit_list %}"{{ toolkit }}"{% if not loop.last %}, {% endif %}{% endfor %}]
-        {%- endif %}
+    arcade_tools = await get_arcade_tools(
+        client,
+        tools=globals.TOOLS,
+        mcp_servers=globals.MCP_SERVERS
     )
 
-    for tool in agent_tools:
-        await auth_tool(client, tool_name=tool.name, user_id=user_id)
+    for tool in arcade_tools:
+        await auth_tool(client, tool_name=tool.original_name, user_id=user_id)
 
     agent = Agent(
-        model=LiteLlm(model=f"openai/{os.environ["OPENAI_MODEL"]}"),
-        name="google_agent",
-        instruction="{{ agent_instruction | safe }}",
-        description="{{ agent_description | safe }}",
-        tools=agent_tools,
+        model=LiteLlm(model=globals.MODEL),
+        name=globals.AGENT_NAME,
+        instruction=globals.SYSTEM_PROMPT,
+        description=globals.AGENT_NAME,
+        tools=arcade_tools,
         before_tool_callback=[confirm_tool_usage],
     )
 
