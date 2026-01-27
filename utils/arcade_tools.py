@@ -1,4 +1,5 @@
 from arcadepy import AsyncArcade
+from arcadepy.types import ToolDefinition
 import asyncio
 import json
 from collections import defaultdict
@@ -26,6 +27,24 @@ async def get_all_tools_from_mcp_server(
         all_tools.extend(tools.items)
     return all_tools
 
+
+async def serializable_tool_parameters(arcade_tool: ToolDefinition):
+    parameters = []
+    for param in arcade_tool.input.parameters:
+        parameters.append({
+            "name": param.name,
+            "type": param.value_schema.val_type,
+            "description": param.description
+        })
+    return parameters
+
+
+async def serializable_tool_definition(arcade_tool: ToolDefinition):
+    return {
+        "tool_name": arcade_tool.qualified_name,
+        "description": arcade_tool.description,
+        "parameters": await serializable_tool_parameters(arcade_tool),
+    }
 
 
 async def main():
