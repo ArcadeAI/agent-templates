@@ -55,8 +55,7 @@ ALL_OPTIMIZED_TOOLKITS = [
 
 async def main():
     mcp_servers_definitions = {}
-    # for toolkit in ALL_OPTIMIZED_TOOLKITS:
-    for toolkit in ["Slack", "Gmail"]:
+    for toolkit in ALL_OPTIMIZED_TOOLKITS:
         tools = await get_all_tools_from_mcp_server(toolkit)
         mcp_servers_definitions[toolkit] = [await serializable_tool_definition(t) for t in tools]
 
