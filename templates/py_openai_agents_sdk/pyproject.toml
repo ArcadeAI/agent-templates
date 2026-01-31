@@ -7,4 +7,5 @@ requires-python = ">=3.13"
 dependencies = [
     "arcadepy>=1.10.0",
     "openai-agents>=0.6.5",
+    "python-multipart>=0.0.22",
 ]
