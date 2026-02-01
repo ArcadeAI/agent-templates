@@ -11,6 +11,8 @@ import * as readline from "node:readline/promises";
 
 // configure your own values to customize your agent
 
+// configure your own values to customize your agent
+
 // The Arcade User ID identifies who is authorizing each service.
 const arcadeUserID = process.env.ARCADE_USER_ID;
 if (!arcadeUserID) {
@@ -18,21 +20,13 @@ if (!arcadeUserID) {
 }
 // This determines which MCP server is providing the tools, you can customize this to make a Slack agent, or Notion agent, etc.
 // all tools from each of these MCP servers will be retrieved from arcade
-{%- if arcade_toolkit_list %}
-const toolkits={{ arcade_toolkit_list | safe }};
-{% else %}
-const toolkits=[];
-{% endif -%}
+const toolkits=['Slack'];
 // This determines isolated tools that will be
-{%- if arcade_tool_list %}
-const isolatedTools={{ arcade_tool_list | safe }}
-{% else %}
-const isolatedTools=[];
-{% endif -%}
+const isolatedTools=['Gmail_ListEmails', 'Gmail_SendEmail']
 // This determines the maximum number of tool definitions Arcade will return
 const toolLimit = 100;
 // This prompt defines the behavior of the agent.
-const systemPrompt = {{ agent_instruction | tojson }};
+const systemPrompt = "You\u0027re a very useful assistant with access to Gmail and Slack tools, please use them to effectively do tasks requested by the user";
 // This determines which LLM will be used inside the agent
 const agentModel = process.env.OPENAI_MODEL;
 if (!agentModel) {

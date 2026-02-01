@@ -5,7 +5,7 @@ import {
   executeZodTool,
   isAuthorizationRequiredError,
   toZod,
-} from "@arcadeai/arcadejs/lib";
+} from "@arcadeai/arcadejs/lib/index";
 import { type ToolExecuteFunction } from "@arcadeai/arcadejs/lib/zod/types";
 import { tool } from "langchain";
 import {
@@ -14,7 +14,7 @@ import {
 import readline from "node:readline/promises";
 
 // This determines which tools require human in the loop approval to run
-const TOOLS_WITH_APPROVAL = {{ tools_with_human_confirmation | safe }};
+const TOOLS_WITH_APPROVAL = ['Gmail_SendEmail', 'Gmail_ListEmails'];
 
 // Prompt user for yes/no confirmation
 export async function confirm(question: string, rl?: readline.Interface): Promise<boolean> {
