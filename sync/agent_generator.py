@@ -329,7 +329,7 @@ class AgentGenerator:
 
         commit_sha = self.commit_changes(agent_dir, message, initial=initial)
 
-        # Push to remote
-        self.push_to_remote(agent_dir, branch='main', force=initial)
+        # Push to remote (always force push - local is source of truth)
+        self.push_to_remote(agent_dir, branch='main', force=True)
 
         return agent_dir, commit_sha
