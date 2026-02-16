@@ -1,0 +1,10 @@
+[project]
+name = "py-crewai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "arcadepy>=1.10.0",
+    "crewai[tools]>=1.9.3",
+]
