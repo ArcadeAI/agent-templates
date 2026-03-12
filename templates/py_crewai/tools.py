@@ -86,6 +86,7 @@ class ArcadeTool(BaseTool):
         return result.output.value
 
 
+# [snippet:get_arcade_tools]
 def get_arcade_tools(
     client: Arcade,
     *,
@@ -129,3 +130,4 @@ def get_arcade_tools(
         result.append(t)
 
     return result
+# [/snippet:get_arcade_tools]
