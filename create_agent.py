@@ -2,6 +2,8 @@ import argparse
 import json
 from pathlib import Path
 from render_utils import create_agent
+from tutorial_renderer import render_tutorial
+from tutorial_utils import strip_markers_in_directory
 from rich import print
 
 # Mapping from configuration subdirectories to template names - NO LONGER NEEDED
@@ -25,6 +27,11 @@ def main():
         "--output-dir",
         type=Path,
         help="The directory where the agent will be created. Defaults to real_agents/<template>/<config_stem>.",
+    )
+    parser.add_argument(
+        "--tutorial",
+        action="store_true",
+        help="Also render the tutorial alongside the agent.",
     )
 
     args = parser.parse_args()
@@ -72,6 +79,22 @@ def main():
     print("")
 
     create_agent(output_dir, template_dir, configuration)
+
+    if args.tutorial:
+        tutorial_md = render_tutorial(
+            template_dir=template_dir,
+            code_dir=output_dir,
+            context=configuration,
+        )
+        if tutorial_md:
+            tutorial_out = output_dir / "TUTORIAL.md"
+            tutorial_out.write_text(tutorial_md, encoding="utf-8")
+            print(f"Tutorial rendered to: [green]{tutorial_out}[/green]")
+        else:
+            print("[yellow]No tutorial template found for this template.[/yellow]")
+
+    # Strip snippet markers from generated code
+    strip_markers_in_directory(output_dir)
 
 if __name__ == "__main__":
     main()

@@ -8,6 +8,9 @@ import sys
 from pathlib import Path
 from typing import Optional, Tuple
 
+from tutorial_renderer import render_tutorial
+from tutorial_utils import strip_markers_in_directory
+
 logger = logging.getLogger(__name__)
 
 
@@ -86,6 +89,23 @@ class AgentGenerator:
 
             # Generate the agent
             create_agent(output_dir, template_dir, configuration)
+
+            # Render tutorial if template has one
+            try:
+                tutorial_md = render_tutorial(
+                    template_dir=template_dir,
+                    code_dir=output_dir,
+                    context=configuration,
+                )
+                if tutorial_md:
+                    tutorial_out = output_dir / "TUTORIAL.md"
+                    tutorial_out.write_text(tutorial_md, encoding="utf-8")
+                    logger.info(f"Rendered tutorial to: {tutorial_out}")
+            except Exception as e:
+                logger.warning(f"Tutorial rendering failed (non-fatal): {e}")
+
+            # Strip snippet markers from generated code
+            strip_markers_in_directory(output_dir)
 
             logger.info(f"Successfully generated agent at: {output_dir}")
             return output_dir

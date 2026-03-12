@@ -98,6 +98,9 @@ class ChangeDetector:
 
             # Check if it's a template file
             elif filepath.startswith('templates/'):
+                # Skip tutorial files — they don't affect agent code generation
+                if Path(filepath).name.startswith('tutorial'):
+                    continue
                 parts = Path(filepath).parts
                 if len(parts) >= 2:
                     template_name = parts[1]

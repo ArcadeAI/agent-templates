@@ -223,3 +223,6 @@ __marimo__/
 # Agent sync automation
 .sync-state.json
 .sync-logs/
+
+# Rendered tutorials (build artifact)
+rendered-tutorials/

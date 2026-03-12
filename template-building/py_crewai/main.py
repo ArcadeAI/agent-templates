@@ -26,6 +26,7 @@ def main():
         role=globals.AGENT_NAME,
         goal=globals.AGENT_GOAL,
         backstory=globals.AGENT_BACKSTORY,
+        llm=globals.MODEL,
         tools=arcade_tools,
     )
 
