@@ -1,3 +1,4 @@
+// [snippet:imports]
 "use strict";
 import { getTools, confirm, arcade } from "./tools";
 import { createAgent } from "langchain";
@@ -8,7 +9,9 @@ import {
 } from "@langchain/langgraph";
 import chalk from "chalk";
 import * as readline from "node:readline/promises";
+// [/snippet:imports]
 
+// [snippet:config]
 // configure your own values to customize your agent
 
 // The Arcade User ID identifies who is authorizing each service.
@@ -40,7 +43,9 @@ if (!agentModel) {
 }
 // This allows LangChain to retain the context of the session
 const threadID = "1";
+// [/snippet:config]
 
+// [snippet:tool-setup]
 const tools = await getTools({
   arcade,
   toolkits: toolkits,
@@ -48,9 +53,9 @@ const tools = await getTools({
   userId: arcadeUserID,
   limit: toolLimit,
 });
+// [/snippet:tool-setup]
 
-
-
+// [snippet:handle-interrupt]
 async function handleInterrupt(
   interrupt: Interrupt,
   rl: readline.Interface
@@ -83,14 +88,18 @@ async function handleInterrupt(
   }
   return { authorized: false };
 }
+// [/snippet:handle-interrupt]
 
+// [snippet:agent-setup]
 const agent = createAgent({
   systemPrompt: systemPrompt,
   model: agentModel,
   tools: tools,
   checkpointer: new MemorySaver(),
 });
+// [/snippet:agent-setup]
 
+// [snippet:stream-agent]
 async function streamAgent(
   agent: any,
   input: any,
@@ -116,7 +125,9 @@ async function streamAgent(
 
   return interrupts;
 }
+// [/snippet:stream-agent]
 
+// [snippet:agentic-loop]
 async function main() {
   const config = { configurable: { thread_id: threadID } };
   const rl = readline.createInterface({
@@ -167,3 +178,4 @@ async function main() {
 
 // Run the main function
 main().catch((err) => console.error(err));
+// [/snippet:agentic-loop]

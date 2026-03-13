@@ -37,6 +37,7 @@ def create_ignore_pattern(
         r".*\.egg-info",
         r".*\.pyc",
         r".*\.pyo",
+        r"tutorial.*",
     ]
 
     if not include_evals:

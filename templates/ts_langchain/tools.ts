@@ -1,3 +1,4 @@
+// [snippet:imports]
 import { Arcade } from "@arcadeai/arcadejs";
 import {
   type ToolExecuteFunctionFactoryInput,
@@ -15,7 +16,9 @@ import readline from "node:readline/promises";
 
 // This determines which tools require human in the loop approval to run
 const TOOLS_WITH_APPROVAL = {{ tools_with_human_confirmation | safe }};
+// [/snippet:imports]
 
+// [snippet:confirm-helper]
 // Prompt user for yes/no confirmation
 export async function confirm(question: string, rl?: readline.Interface): Promise<boolean> {
   let shouldClose = false;
@@ -37,7 +40,9 @@ export async function confirm(question: string, rl?: readline.Interface): Promis
 
   return ["y", "yes"].includes(answer.trim().toLowerCase());
 }
+// [/snippet:confirm-helper]
 
+// [snippet:execute-helper]
 export function executeOrInterruptTool({
   zodToolSchema,
   toolDefinition,
@@ -111,7 +116,9 @@ export function executeOrInterruptTool({
     }
   };
 }
+// [/snippet:execute-helper]
 
+// [snippet:get-tools]
 // Initialize the Arcade client
 export const arcade = new Arcade();
 
@@ -172,3 +179,4 @@ export async function getTools({
 
   return langchainTools;
 }
+// [/snippet:get-tools]
