@@ -1,3 +1,4 @@
+# [snippet:config]
 from dotenv import load_dotenv
 import os
 
@@ -23,3 +24,4 @@ AGENT_BACKSTORY = """
 """
 AGENT_NAME = "{{ agent_name | safe }}"
 ENFORCE_HUMAN_CONFIRMATION = {{ tools_with_human_confirmation | safe }}
+# [/snippet:config]

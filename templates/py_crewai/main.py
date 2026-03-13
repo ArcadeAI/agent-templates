@@ -1,3 +1,4 @@
+# [snippet:imports]
 from arcadepy import Arcade
 from crewai import Agent
 from crewai.events.event_listener import EventListener
@@ -5,6 +6,7 @@ from dotenv import load_dotenv
 
 from tools import get_arcade_tools
 import globals
+# [/snippet:imports]
 
 load_dotenv()
 
@@ -13,6 +15,7 @@ EventListener().formatter.verbose = False
 
 
 def main():
+    # [snippet:tool-setup]
     client = Arcade()
 
     arcade_tools = get_arcade_tools(
@@ -21,14 +24,18 @@ def main():
         mcp_servers=globals.MCP_SERVERS,
         user_id=globals.ARCADE_USER_ID,
     )
+    # [/snippet:tool-setup]
 
+    # [snippet:agent-setup]
     agent = Agent(
         role=globals.AGENT_NAME,
         goal=globals.AGENT_GOAL,
         backstory=globals.AGENT_BACKSTORY,
         tools=arcade_tools,
     )
+    # [/snippet:agent-setup]
 
+    # [snippet:chat-loop]
     history = []
     print("Agent ready. Type 'exit' to quit.\n")
 
@@ -41,6 +48,7 @@ def main():
         result = agent.kickoff(history)
         history.append({"role": "assistant", "content": result.raw})
         print(f"\n{result.raw}\n")
+    # [/snippet:chat-loop]
 
 
 if __name__ == "__main__":
